@@ -35,3 +35,34 @@ A container is a lightweight, standalone executable package that includes all th
 ### Problem 2: DevOps Workflow
 
 - Another problem that Docker solves is the DevOps workflow. In traditional development workflows, developers write code on their local machines, test it, and then deploy it to production servers. This process can be time-consuming, error-prone, and difficult to manage, especially when dealing with multiple applications and environments.
+
+Docker solved this problem by enabling developers to build, test, and deploy their applications in a consistent and repeatable manner. With Docker, developers can define the environment that their application will run in, including the operating system, language, and other dependencies. This allows developers to create a standardized environment that can be used across all stages of the development process, from development to production.
+- By using Docker, developers can also streamline the deployment process by using containers to package and deploy their applications. Containers are lightweight and portable, which makes them easy to move between different environments and servers. This allows developers to quickly and easily deploy their applications to production servers, reducing the time and effort required to manage the DevOps workflow.
+
+### Problem 3: Resource Management
+
+- Another challenge that developers face is resource management. Applications often require different amounts of CPU, memory, and storage resources, and these requirements can change over time. Manually managing these resources can be difficult and time-consuming, especially in large-scale production environments.
+
+- Docker solves this problem by providing a lightweight and efficient virtualization layer that isolates applications from each other and the underlying hardware. Each Docker container runs in its own isolated environment, with its own set of resources, including CPU, memory, and storage. This allows multiple applications to run on the same server without interfering with each other, and it ensures that each application has the resources it needs to operate smoothly.
+
+- Docker also makes it easy to scale applications up or down as needed. Developers can use Docker Swarm or Kubernetes to manage large clusters of Docker hosts, automatically scaling containers up or down based on resource usage.
+
+### Problem 4: Portability
+
+- Finally, portability is a major concern for many developers. Applications need to be able to run on different operating systems and hardware architectures, and they need to be able to move between different environments, such as development, testing, and production.
+
+- Docker solves this problem by providing a portable runtime environment. Docker containers can run on any operating system that supports Docker, including Linux, Windows, and macOS. This allows developers to build and test their applications on their local machines, and then deploy them to any server or cloud platform that supports Docker.
+
+- Docker also makes it easy to move applications between different environments. Developers can use Docker images to package their applications and all their dependencies into a single container, which can then be deployed to any Docker-enabled server or cloud platform.
+
+### Virtualization vs containerization
+
+### What is a Docker image?
+- A Docker image is a self-contained package that includes everything needed to run an application. It is essentially a snapshot of a container, containing all the necessary files, configurations, and dependencies needed to run the application.
+- Docker images are designed to be portable and can be run on any machine that supports Docker, regardless of the underlying operating system or hardware architecture. This makes Docker images an ideal way to package and distribute applications, as they can run consistently in any environment.
+  > **Note**
+  > Docker images are created from a Dockerfile, but what is a dockerfile again??
+
+### Dockerfile:
+- Dockerfile is a text file that contains a set of instructions for building the image, The Dockerfile specifies the base image to use, the software components to install, and the configuration settings to apply.
+- Once the Dockerfile is written, it can be used to build the Docker image. The Docker build command reads the Dockerfile and creates a new image based on its instructions. The resulting image can then be stored in a container registry, such as Docker Hub or a private registry, or it can be distributed to other developers to run on their local machines or deploy to other servers.
