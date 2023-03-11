@@ -66,3 +66,13 @@ Docker solved this problem by enabling developers to build, test, and deploy the
 ### Dockerfile:
 - Dockerfile is a text file that contains a set of instructions for building the image, The Dockerfile specifies the base image to use, the software components to install, and the configuration settings to apply.
 - Once the Dockerfile is written, it can be used to build the Docker image. The Docker build command reads the Dockerfile and creates a new image based on its instructions. The resulting image can then be stored in a container registry, such as Docker Hub or a private registry, or it can be distributed to other developers to run on their local machines or deploy to other servers.
+
+### What is a registry?
+- In Docker, a registry is a storage and distribution system for Docker images, it is a server-side application that stores and manages Docker images, which can be thought of as a packaged and portable version of an application or service.
+- Docker registries allows users to share and distribute Docker images, making it easier to deploy applications on different systems and environments. Docker registries can be public, where anyone can access and download images, or private, where access is restricted to authorized users.
+
+### Docker compose
+
+- Docker compose is a tool that allows users to define and run multi-container Docker applications. It is a command-line tool that uses a YAML file to configure the services, networks and volumes required by an application.
+- With Docker compose, users can define a set of services that make up an application, specify how those services should be configured, and launch and manage them as a single unit. For example, a typical web application may require a web server, a database, and a catching service. With Docker compose, users can define each of these services in a YAML file, along with their required configuration, and launch them all together with a single command.
+- Docker Compose simplifies the process of deploying complex applications by allowing users to manage multiple containers as a single unit. It also provides a way to manage environment variables, volumes, and networks, making it easier to costomize and configure applications to different environments.
