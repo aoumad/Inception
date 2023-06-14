@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+	mariadb:
+		image:
+		port: 
+		restart: always
+		netowrks: 
+	wordpress:
+		image: wordpress
+		port:
+			- "8089:80"
+		environment:
+		
+
+networks:
+	inception:
+	driver: inception
+
+volumes:
+	mariadb:
+		name: mariadb
+		driver: local
+	wordpress:
+		name: wordpress
+		driver: local
+		
