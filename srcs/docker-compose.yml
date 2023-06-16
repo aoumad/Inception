@@ -1,27 +1,85 @@
 version: "3.8"
 
+# services:
+# 	mariadb:
+# 		container_name: mariadb
+# 		command:
+# 		build:
+# 		args:
+# 		expose:
+# 		ports:
+# 		volumes:
+# 		env_file:
+# 		restart:
+# 		networks:
+
+# 	nginx:
+# 		container_name: nginx
+# 		command:
+# 		build:
+# 		expose:
+# 		args:
+# 		ports:
+# 		depends_on:
+# 		volumes:
+# 		env_file:
+# 		restart:
+
 services:
 	mariadb:
-		image:
-		port: 
-		restart: always
-		netowrks: 
+		container_name: mariadb
+		build:
+			context: srcs/requirements/mariadb
+			dockerfile: Dockerfile
+			args:
+		restart: on-failure
+		expose:
+		volumes:
+		env_file: .env 
+		networks:
+	
 	wordpress:
-		image: wordpress
-		port:
-			- "8089:80"
-		environment:
+		container_name: wordpress
+		build:
+			context: srcs/requirements/wordpress
+			dockerfile: Dockerfile
+			args:
+		restart: on-failure
+		depends_on:
+			- mariadb
+		volumes:
+		env_file: .env
+		networks:
+
+	nginx:
+		container_name: nginx
+		build:
+			context:  srcs/requirements/nginx
+			dockerfile: Dockerfile
+			args:
+		restart: on-failure
+		expose:
+		volumes:
+		env_file: .env
+
 		
 
 networks:
 	inception:
-	driver: inception
+	driver: bridge
 
 volumes:
 	mariadb:
 		name: mariadb
 		driver: local
+		bind: /
+		driver_opts:
+			type: none
+			o: 
 	wordpress:
 		name: wordpress
 		driver: local
-		
+		bind: /
+		driver_opts:
+			type: none
+			o: 
