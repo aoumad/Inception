@@ -1,13 +1,18 @@
 # Base image
-From ubuntu:20.04
+From alpine:3.14
 
 # Install mariadb server and client
-RUN apt update && apt -y install mariadb-server
+RUN apt-get update && apt-get -y install mariadb-server mariadb-client
 
 # Copy custom configuration file
+Copy ./tools/script.sh /etc/mysql/conf.d/
 
+RUN 777 /etc/mysql/conf.d/
 # Expose the default mariadb port
 EXPOSE 3306
 
+# run the destination script
+ENTRYPOINT [ "/etc/mysql/conf.d/" ]
+
 # Start mariadb daemon service
-CMD ["mysqld"]
+CMD ["mysqld_serv"]
