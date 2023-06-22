@@ -7,6 +7,7 @@ This project aims to broaden your knowledge of system administration by using Do
 This is a complete guide of inception project where we are going to explain all the needed concepts (Docker, containers, VM, the command lines...etc)
 
 - [docker engine](#docker-engine)
+- [PID 1 && the dumb init solution](#pid-1-&&-the-dumb-init-solution)
 
 ## Docker Engine
 
@@ -76,3 +77,21 @@ Docker solved this problem by enabling developers to build, test, and deploy the
 - Docker compose is a tool that allows users to define and run multi-container Docker applications. It is a command-line tool that uses a YAML file to configure the services, networks and volumes required by an application.
 - With Docker compose, users can define a set of services that make up an application, specify how those services should be configured, and launch and manage them as a single unit. For example, a typical web application may require a web server, a database, and a catching service. With Docker compose, users can define each of these services in a YAML file, along with their required configuration, and launch them all together with a single command.
 - Docker Compose simplifies the process of deploying complex applications by allowing users to manage multiple containers as a single unit. It also provides a way to manage environment variables, volumes, and networks, making it easier to costomize and configure applications to different environments.
+
+
+## PID 1 && the dumb-init solution
+
+### Zombie process:
+- In an operating system, when a process (a running program) finishes it's execution, it doesn't immediately disappear from the system. Instead, it becomes a "zombie process".
+- A zombie process is a term used to describe a process that has completed it's execution but still has an entry in the process table. It's essentially a process that is dead but hasn't been completely removed from the system.
+- In summary, a zombie process is a completed process that still has an entry in the process table. It occurs when the parent process fails to handle the termination of it's child process properly. While zombie processes themselves are not harmful, an excessive accumulation of zombie processes can lead to issues, such as resource exhaustion. Therefore, it's crucial for parent processes to handle the termination signals and clean up zombie processes to ensure the efficient functioning of the system.
+
+### PID 1 && The dumb-init solution
+- When running a Docker container, the first process inside the container is assigned the PID 1. This process is responsible for starting and stopping other processes within the container, and it is crucial for the proper functioning of the container.
+- One issue that can occur with PID 1 in Docker is known as the "PID 1 zombie reaping problem". This occurs when a zombie process is not properly reaped by PID 1. This can cause problems with resource management and lead to other issues.
+- To address this problem, the dumb-init solution can be used. Dumb-init is a simple process supervisor that can be used as the init process in a container. It ensures that all processes are properly reaped and that signals are correctly propagated to child processes.
+- To use dumb-init in your Docker container, you can add the following line to your Dockerfile:
+```
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+```
+This will ensure that dumb-init is used as the PID 1 process in the container, which will help prevent the PID 1 zombie reaping problem and ensure that your container runs smoothly.
