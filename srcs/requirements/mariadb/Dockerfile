@@ -1,18 +1,20 @@
 # Base image
-From alpine:3.14
+FROM debian:buster
 
 # Install mariadb server and client
-RUN apt-get update && apt-get -y install mariadb-server mariadb-client
+RUN apt update && apt install mariadb-server -y
 
 # Copy custom configuration file
-Copy ./tools/script.sh /etc/mysql/conf.d/
+COPY ./tools/script.sh ./
 
-RUN 777 /etc/mysql/conf.d/
+# Set execute permissions for the script
+RUN chmod +x /script.sh
+
 # Expose the default mariadb port
 EXPOSE 3306
 
-# run the destination script
-ENTRYPOINT [ "/etc/mysql/conf.d/" ]
-
+# Run the destination script
+# ENTRYPOINT ["./script.sh"]
+CMD ["./script.sh"]
 # Start mariadb daemon service
-CMD ["mysqld_serv"]
+# CMD ["mysqld"]

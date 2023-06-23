@@ -1,85 +1,199 @@
 version: "3.8"
 
-# services:
-# 	mariadb:
-# 		container_name: mariadb
-# 		command:
-# 		build:
-# 		args:
-# 		expose:
-# 		ports:
-# 		volumes:
-# 		env_file:
-# 		restart:
-# 		networks:
-
-# 	nginx:
-# 		container_name: nginx
-# 		command:
-# 		build:
-# 		expose:
-# 		args:
-# 		ports:
-# 		depends_on:
-# 		volumes:
-# 		env_file:
-# 		restart:
-
 services:
-	mariadb:
-		container_name: mariadb
-		build:
-			context: srcs/requirements/mariadb
-			dockerfile: Dockerfile
-			args:
-		restart: on-failure
-		expose:
-		volumes:
-		env_file: .env 
-		networks:
-	
-	wordpress:
-		container_name: wordpress
-		build:
-			context: srcs/requirements/wordpress
-			dockerfile: Dockerfile
-			args:
-		restart: on-failure
-		depends_on:
-			- mariadb
-		volumes:
-		env_file: .env
-		networks:
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    build:
+      context: requirements/mariadb
+      dockerfile: Dockerfile
+    restart: on-failure
+    expose:
+      - 3306
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "exit 0"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - type: bind
+        source: /Users/aoumad/goinfre/mariadb
+        target: /var/lib/mysql
+    env_file:
+      - .env
+    networks:
+      - inception
 
-	nginx:
-		container_name: nginx
-		build:
-			context:  srcs/requirements/nginx
-			dockerfile: Dockerfile
-			args:
-		restart: on-failure
-		expose:
-		volumes:
-		env_file: .env
+  wordpress:
+    container_name: wordpress
+    image: wordpress:php8.2-fpm
+    build:
+      context: requirements/wordpress
+      dockerfile: Dockerfile
+    restart: on-failure
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "9000:9000"
+    volumes:
+      - type: bind
+        source: /Users/aoumad/goinfre/wordpress
+        target: /var/www/html
+    env_file:
+      - .env
+    networks:
+      - inception
+    stdin_open: true
+    tty: true
 
-		
+  nginx:
+    container_name: nginx
+    image: nginx
+    build:
+      context: requirements/nginx
+      dockerfile: Dockerfile
+    restart: on-failure
+    depends_on:
+      - wordpress
+    expose:
+      - 80
+    ports:
+      - "80:80"
+    volumes:
+      - type: bind
+        source: /Users/aoumad/goinfre/wordpress_volumes
+        target: /usr/share/nginx/html
+    env_file:
+      - .env
+    networks:
+      - inception
+    stdin_open: true
+    tty: true
 
 networks:
-	inception:
-	driver: bridge
+  inception:
+    driver: bridge
 
 volumes:
-	mariadb:
-		name: mariadb
-		driver: local
-		bind: /
-		driver_opts:
-			type: none
-			o: 
-	wordpress:
-		name: wordpress
-		driver: local
-		bind: /
-		driver_opts:
-			type: none
-			o: 
+  mariadb_v:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/aoumad/goinfre/mariadb
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/aoumad/goinfre/wordpress
+  wordpress_v:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/aoumad/goinfre/wordpress_volumes
+
+# version: "3.8"
+
+# services:
+#   mariadb:
+#     container_name: mariadb
+#     image: mariadb
+#     # build:
+#     #   context: requirements/mariadb
+#     #   dockerfile: Dockerfile
+#     restart: on-failure
+#     expose:
+#       - 3306
+#     ports:
+#       - "3306:3306"
+#     healthcheck:
+#       test: ["CMD-SHELL", "ss -tul | grep mysql"]
+#       interval: 5s
+#       timeout: 2s
+#       retries: 5
+#       start_period: 5s
+#     volumes:
+#       - type: bind
+#         source: /Users/aoumad/goinfre/mariadb
+#         target: /var/lib/mysql
+#     env_file:
+#       - .env
+#     networks:
+#       - inception
+
+#   wordpress:
+#     container_name: wordpress
+#     image: wordpress
+#     build:
+#       context: requirements/wordpress
+#       dockerfile: Dockerfile
+#     restart: on-failure
+#     depends_on:
+#       mariadb:
+#         condition: service_healthy
+#     ports:
+#       - "9000:9000"
+#     volumes:
+#       - type: bind
+#         source: /Users/aoumad/goinfre/wordpress
+#         target: /var/www/html
+#     env_file:
+#       - .env
+#     networks:
+#       - inception
+#     stdin_open: true
+#     tty: true
+
+#   nginx:
+#     container_name: nginx
+#     image: nginx
+#     build:
+#       context: requirements/nginx
+#       dockerfile: Dockerfile
+#     restart: on-failure
+#     depends_on:
+#       - wordpress
+#     expose:
+#       - 443
+#     ports:
+#       - "443:443"
+#     volumes:
+#       - type: bind
+#         source: /Users/aoumad/goinfre/wordpress_volumes
+#         target: /usr/share/nginx/html
+#     env_file:
+#       - .env
+#     networks:
+#       - inception
+#     stdin_open: true
+#     tty: true
+
+# networks:
+#   inception:
+#     driver: bridge
+
+# volumes:
+#   mariadb_v:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: /Users/aoumad/goinfre/mariadb
+#   wordpress:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: /Users/aoumad/goinfre/wordpress
+#   wordpress_v:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: /Users/aoumad/goinfre/wordpress_volumes
