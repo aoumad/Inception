@@ -1,0 +1,11 @@
+# Base image
+From debian:buster
+
+# Install nginx
+RUN apt update && apt install nginx -y
+
+# Copy custom configuration file
+COPY ./tools/nginx.conf /etc/nginx/nginx.conf
+
+# Start nginx server
+CMD ["nginx", "-g", "daemon off;"]
