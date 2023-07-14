@@ -129,4 +129,8 @@ This will ensure that dumb-init is used as the PID 1 process in the container, w
 - Persisting data between the container and the host machine can be necessary for several reasons:
 
   * Data Backup and Recovery: By persisting data on the host machine, you ensure that important data is not lost if the container is removed, upgraded, or experciences any issues. Storing data on the host machine allows you to create backups and easily recover the data if needed.
-  * Data Sharing and collaboration: Persisting data on the host machine enables sharing and collaboration between containers and other applications running on the host. 
+  * Data Sharing and collaboration: Persisting data on the host machine enables sharing and collaboration between containers and other applications running on the host.
+  * Data Persistence Across Container lifecycles: Containers are designed to be ephemeral, meaning they can be created, destroyed, and recreated as needed. However, some data needs to persist across container lifecycles, such as configuration files, databases, or uploaded user files. By persisting this data on the host machine, you ensure it's availability and consistency even when containers are terminated or restarted.
+  * Develop,emt and Debugging: During the development and debugging phases of an application, it is often useful to have quick and direct access to files and directories from the host machine within the container. Bind mounts allow you to make changes to code, configurations, or other resources on the host, and instantly see the effects within the container without the need for rebuilding or restarting the container.
+ 
+  Overall, persisting data between the container and the host machine offers flexibility, data integrity, and compatibility with existing systems. It ensures that critical data is accessible, durable, and can be shared among different components or processes running on the host machine.
