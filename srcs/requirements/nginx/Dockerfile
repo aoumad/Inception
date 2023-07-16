@@ -1,5 +1,5 @@
 # Base image
-From debian:buster
+FROM debian:buster
 
 # Install nginx
 RUN apt update && apt install nginx -y

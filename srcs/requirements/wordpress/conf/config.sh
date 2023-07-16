@@ -1,78 +1,51 @@
 #!/bin/bash
+	mkdir -p /run/php/;
+	touch /run/php/php7.3-fpm.pid; #Store PID files for PHP processes managed by the PHP-FPM
+	sed -i "s/listen = \/run\/php\/php7.3-fpm.sock/listen = 9000/" "/etc/php/7.3/fpm/pool.d/www.conf"
+# Database credentials
+DB_HOST="dbhost"
+DB_USER="myuser"
+DB_PASSWORD="mypassword"
+DB_NAME="mydatabase"
 
-# This line specifies the interpreter for the script, indicating that it should be
-# executed using the Bash shell
+# Other variables - replace with appropriate values
+DOMAIN_NAME="mydomain.com"
+TITLE="My Wordpress Site"
+ADMIN_USER="admin"
+ADMIN_PASSWORD="adminpassword"
+ADMIN_EMAIL="admin@example.com"
+USER="myuser"
+USER_EMAIL="user@example.com"
+USER_PASSWORD="userpassword"
 
-# These lines defines two variables: `WP_PATH` specifies the path where Wordpress will be 
-# installed ('/var/www/html' in our case), and `WP_CLI` specifies the path to the `wp` command
-# (assuming it's installed at '/usr/local/bin/wp') 
+mkdir -p /var/www/html
 WP_PATH="/var/www/html"
 WP_CLI="/usr/local/bin/wp"
-
-
-# Check if WordPress is already isntalled
-# This block of code checks if the `wp` command (specified by the `WP_CLI` variable)
-# is installed. If the command is not found, it downloads the WP-CLI tool from the official
-# repo, sets the necessary permessions, and moves it to the specified path
 if [ ! -f "$WP_PATH/.installed" ]; then
-    # Downlaod WP-CLI if not already installed
+    # Download WP-CLI if not already installed
     if ! command -v $WP_CLI &> /dev/null; then
-    curl -0 https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-    chmod +x wp-cli.phar
-    mv wp-cli.phar $WP_CLI
+        wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        chmod +x wp-cli.phar
+        mv wp-cli.phar $WP_CLI
+    fi
+
+    cd $WP_PATH
+    $WP_CLI core download --allow-root
+
+    cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
+    sed -i "s/database_name_here/${DB_NAME}/g" "/var/www/html/wp-config.php"
+    sed -i "s/username_here/${DB_USER}/g" "/var/www/html/wp-config.php"
+    sed -i "s/password_here/${DB_PASSWORD}/g" "/var/www/html/wp-config.php"
+    sed -i "s/localhost/${DB_HOST}/g" "/var/www/html/wp-config.php"
+
+    chmod -R 755 $WP_PATH
+    chown -R www-data:www-data $WP_PATH  # Fix the invalid chmod command
+
+    $WP_CLI core install --allow-root --url=$DOMAIN_NAME --title="My Wordpress Site" --admin_user=$ADMIN_USER --admin_password=$ADMIN_PASSWORD --admin_email=$ADMIN_EMAIL --path=$WP_PATH
+
+    $WP_CLI user create --allow-root $USER $USER_EMAIL --user_pass=$USER_PASSWORD --role='author' --path=$WP_PATH
+
+    touch $WP_PATH/.installed
 fi
-
-
-
-# Install Wordpress
-# This line uses the `wp` command to download the latest version of WordPress to the specified
-# path `($WP_PATH)`
-$WP_CLI core download --path=$WP_PATH
-
-
-# Create wp-config.php
-# This line uses the `wp` command to create the `wp-config.php` file with the provided
-# database credentials ($MYSQL_DATABASE, $MYSQL_USER, $MYSQL_PASSWORD, $DB_HOST) and other
-# configuration options. The `--force` flag forces overwriting the existing `wp-config.php`
-# file if it already exists
-$WP_CLI config create --dbname=$MYSQL_DATABASE --dbuser=$MYSQL_USER --dbpass=$MYSQL_PASSWORD --dbhost=$DB_HOST --path=$WP_PATH --force
-
-# Modify wp-config.php with database configuration
-sed -i -r "s/database_name_here/$MYSQL_DATABASE/1" $WP_PATH/wp-config.php
-sed -i -r "s/username_here/$MYSQL_USER/1" $WP_PATH/wp-config.php
-sed -i -r "s/password_here/$MYSQL_PASSWORD/1" $WP_PATH/wp-config.php
-sed -i -r "s/localhost/$DB_HOST/1" $WP_PATH/wp-config.php
-
-# Set file permissions and ownership
-# These lines set the file permissions (`chmod`) and ownership (`chown`) of the Wordpress
-# installation directory (`$WP_PATH`). The permessions are set o `755`, allowing the owner
-# to read, write, and execute, and others to read and execute. The ownership is set to the
-# `www-data` user and group, which is commonly used by web servers.
-chmod -R 755 $WP_PATH
-chmod +R www-data:www-data $WP_PATH
-
-
-# Install and configure Wordpress
-# This line uses the `wp` command to install WordPress with the specified options: the site
-# URL (`$DOMAIN_NAME`), site title, admin usename, password and email address
-# The `--path` flag specifies the path to the WordPress installation directory
-$WP_CLI core install --url=$DOMAIN_NAME --title="My Wordpress Site" -- admin_user=$ADMIN_USER --admin_password=$ADMIN_PASSWORD --admin_email=$ADMIN_EMAIL --path=$WP_PATH
-
-# Create additional user
-# This line uses the `wp` command to create a new user in WordPress
-# with the specified username(`$User`).. and so on 
-$WP_CLI user create $USER $USER_EMAIL --user-pass=$USER_PASSWORD --role='author' --path=$WP_PATH
-
-# Set wp_cache constant
-# This line uses the `wp` command to set the `WP_CACHE` constant in the WordPress configuration
-# to `true`. The `--raw` flag ensures that the value is treated as a raw string. The `--path`
-# flag specifies the path to the WordPress installation directory
-$WP_CLI config set WP_CACHE 'true' --raw --path=$WP_PATH
-
-# Create .installed file
-# This line create the `.installed` file in the WordPress installation directory (`$WP_PATH`)
-# This file serves as an indicator that the installation has been completed
-touch $WP_PATH/.installed
-fi
-
-exec "$@"
+/usr/sbin/php-fpm7.3 --nodaemonize
+# exec "$@"

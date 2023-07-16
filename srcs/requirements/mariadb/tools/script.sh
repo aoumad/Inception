@@ -22,7 +22,7 @@ MYSQL_ROOTPASSWORD=1337
 sed -i 's/^bind-address/#bind-address/' /etc/mysql/mariadb.conf.d/50-server.cnf
 # Modify the bind address
 # printf "bind-address = 0.0.0.0\n" | tee /tmp/my.cnf.tmp
-# sed -i '/^bind-address/c\bind-address = 0.0.0.0' /etc/mysql/my.cnf
+sed -i '/^bind-address/c\bind-address = 0.0.0.0' /etc/mysql/my.cnf
 service mysql start
 # Create the database if it doesn't exist
 mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"

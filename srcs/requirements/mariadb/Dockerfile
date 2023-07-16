@@ -18,3 +18,10 @@ EXPOSE 3306
 CMD ["./script.sh"]
 # Start mariadb daemon service
 # CMD ["mysqld"]
+
+
+
+
+# docker build -t my-mariadb-image .
+# docker run -d -p 3306:3306 --name my-mariadb-container my-mariadb-image
+# docker exec -it my-mariadb-container mysql -u abdo -p
