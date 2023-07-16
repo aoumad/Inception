@@ -8,6 +8,7 @@ This is a complete guide of inception project where we are going to explain all 
 
 - [docker engine](#docker-engine)
 - [PID 1 && the dumb init solution](#pid-1-&&-the-dumb-init-solution)
+- [Docker Volumes](#docker-volumes)
 
 ## Docker Engine
 
@@ -95,3 +96,41 @@ Docker solved this problem by enabling developers to build, test, and deploy the
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 ```
 This will ensure that dumb-init is used as the PID 1 process in the container, which will help prevent the PID 1 zombie reaping problem and ensure that your container runs smoothly.
+
+## Docker Volumes
+- In Docker, a volume is a persistent storage location that is used to store data from a container. Volumes are used to persist data from a container even after the container is deleted, and they can be shared between container.
+- `bind mounts` and `named volumes` are mechanisms for persisting data and sharing it between containers and the host machine. However, they differ in their implementation and use cases. Let's explore each other:
+
+### Bind Mounts:
+- A bind mount is a direct reference to a directory on the host machine. It allows you to mount a specific directory or file from the host into a container.
+- With bind mounts, the file or directory is shared between the host and the container, and any changes made in either the host or the container are immediately reflected in both.
+- Bind mounts provide flexibility and allow you to use th host's file system directly within the countainer. They are typically specified using absolute paths on the host machine.
+- Bind mounts can be useful during development or debugging processes when you want to quickly modify or examine files within a container.
+
+### Named volumes:
+- A named volume is a Docker-managed volume that provides an abstraction layer on top of the host's file system. It is a directory within the Docker host's file system that is managed by Docker itself.
+- Named volumes are created and managed by Docker, ensuring their availability and durability even if the containers are removed or recreated.
+- When you create a named volume, Docker handles the underlying storage and manages the volume's lifecyle, including backups and restores.
+- Unlike bind mounts, named volumes are independent of the host's file system, which means they can be more portable and can be used across different hosts and environments.
+- Named volumes are often used in production scenarios where data persistence and sharing between containers are crucial.
+
+### When to use bind mounts/Named Volumes:
+#### We use bind mounts when
+  - You want to directly acess files or directories on the host machine.
+  - You need immediate changes made in the host or container to reflect in both.
+  - You are working in a development or debugging environment.
+#### We use named volumes when
+  * You require data persistence that is managed by Docker itself.
+  * You need data to be available and independent of the container lifecyle.
+  * You want to share data between multiple containers.
+  * You are working in a production environment.
+
+> Now you might be wondering why we need persisting of data between the container and the host machine?
+- Persisting data between the container and the host machine can be necessary for several reasons:
+
+  * Data Backup and Recovery: By persisting data on the host machine, you ensure that important data is not lost if the container is removed, upgraded, or experciences any issues. Storing data on the host machine allows you to create backups and easily recover the data if needed.
+  * Data Sharing and collaboration: Persisting data on the host machine enables sharing and collaboration between containers and other applications running on the host.
+  * Data Persistence Across Container lifecycles: Containers are designed to be ephemeral, meaning they can be created, destroyed, and recreated as needed. However, some data needs to persist across container lifecycles, such as configuration files, databases, or uploaded user files. By persisting this data on the host machine, you ensure it's availability and consistency even when containers are terminated or restarted.
+  * Develop,emt and Debugging: During the development and debugging phases of an application, it is often useful to have quick and direct access to files and directories from the host machine within the container. Bind mounts allow you to make changes to code, configurations, or other resources on the host, and instantly see the effects within the container without the need for rebuilding or restarting the container.
+ 
+  Overall, persisting data between the container and the host machine offers flexibility, data integrity, and compatibility with existing systems. It ensures that critical data is accessible, durable, and can be shared among different components or processes running on the host machine.
