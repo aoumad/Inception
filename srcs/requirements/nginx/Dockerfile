@@ -5,7 +5,7 @@ FROM debian:buster
 RUN apt update && apt install nginx -y
 
 # Copy custom configuration file
-COPY ./tools/nginx.conf /etc/nginx/nginx.conf
+COPY ./conf/nginx.conf /etc/nginx/
 
 # Start nginx server
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off"]

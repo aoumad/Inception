@@ -9,7 +9,7 @@ RUN apt update && \
     apt install -y php php-curl php-mysql wget php7.3-fpm 
 
 
-COPY ./conf/config.sh config.sh
+COPY ./conf/config.sh .
 
 # Make the config.sh executable
 RUN chmod +x config.sh

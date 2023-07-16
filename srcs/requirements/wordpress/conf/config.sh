@@ -2,21 +2,6 @@
 	mkdir -p /run/php/;
 	touch /run/php/php7.3-fpm.pid; #Store PID files for PHP processes managed by the PHP-FPM
 	sed -i "s/listen = \/run\/php\/php7.3-fpm.sock/listen = 9000/" "/etc/php/7.3/fpm/pool.d/www.conf"
-# Database credentials
-DB_HOST="dbhost"
-DB_USER="myuser"
-DB_PASSWORD="mypassword"
-DB_NAME="mydatabase"
-
-# Other variables - replace with appropriate values
-DOMAIN_NAME="mydomain.com"
-TITLE="My Wordpress Site"
-ADMIN_USER="admin"
-ADMIN_PASSWORD="adminpassword"
-ADMIN_EMAIL="admin@example.com"
-USER="myuser"
-USER_EMAIL="user@example.com"
-USER_PASSWORD="userpassword"
 
 mkdir -p /var/www/html
 WP_PATH="/var/www/html"
