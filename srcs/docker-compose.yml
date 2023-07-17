@@ -1,87 +1,66 @@
-version: "3.7"
+version: "3"
 
 services:
   mariadb:
-    container_name: mariadb
-    # image: mariadb
-    build:
-      context: requirements/mariadb
-      dockerfile: Dockerfile
-    restart: on-failure
-    expose:
-      - 3306
-    ports:
-      - "3306:3306"
-    healthcheck:
-      test: ["CMD-SHELL", "exit 0"]
-      interval: 5s
-      timeout: 2s
-      retries: 5
-      start_period: 5s
-    volumes:
-      - mariadb:/var/lib/mysql
-    env_file:
-      - .env
-    networks:
-      - inception
+      container_name: mariadb
+      env_file:
+        - .env
+      ports:
+        - 3360:3360
+      build: ./requirements/mariadb
+      image: mariadb:inception
+      restart: always
+      volumes:
+        - db_volume:/var/lib/mysql
+      networks:
+        - inception
 
   wordpress:
-    container_name: wordpress
-    # image: wordpress:php8.2-fpm
-    build:
-      context: requirements/wordpress
-      dockerfile: Dockerfile
-    restart: on-failure
-    depends_on:
-      mariadb:
-        condition: service_healthy
-    ports:
-      - "9000:9000"
-    volumes:
-      - WordPress:/var/www/html
-    env_file:
-      - .env
-    networks:
-      - inception
-    stdin_open: true
-    tty: true
+      container_name: wordpress
+      env_file:
+        - .env
+      ports:
+        - 9000:9000
+      build: ./requirements/wordpress
+      image: wordpress:inception
+      restart: always
+      depends_on:
+        - mariadb
+      volumes:
+        - wp_volume:/var/www/html
+      networks:
+        - inception
 
   nginx:
-    container_name: nginx
-    # image: nginx
-    build:
-      context: requirements/nginx
-      dockerfile: Dockerfile
-    restart: on-failure
-    depends_on:
-      - wordpress
-    expose:
-      - 443
-    ports:
-      - "443:443"
-    volumes:
-      - WordPress:/var/www/html
-    env_file:
-      - .env
-    networks:
-      - inception
-    stdin_open: true
-    tty: true
+      container_name: nginx
+      env_file:
+        - .env
+      ports:
+        - 443:443
+      build: ./requirements/nginx
+      image: nginx:inception
+      restart: always
+      depends_on:
+        - wordpress
+      volumes:
+        - wp_volume:/var/www/html
+      networks:
+        - inception
 
 networks:
   inception:
     driver: bridge
 
 volumes:
-  mariadb:
+  db_volume:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /Users/aoumad/Documents/GitHub/Inception/srcs/requirements/mariadb
-  WordPress:
+      device: /Users/aoumad/Documents/GitHub/Inception/mariadb
+  wp_volume:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /Users/aoumad/Documents/GitHub/Inception/srcs/requirements/wordpress
+      device: /Users/aoumad/Documents/GitHub/Inception/wordpress
