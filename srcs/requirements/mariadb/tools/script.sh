@@ -1,35 +1,17 @@
 #!/bin/bash
 
-# set -e
-
-# Initialize MariaDB data directory
-# mysql_install_db --user=mysql --datadir=/var/lib/mysql
-
-# Starting the MySQL service
-# mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
-
-# Wait for the MariaDB service to start
-# while ! mysqladmin ping --silent; do
-#     sleep 1
-# done
-# # Mysql setup
-DB_HOST="wokoko"
-DB_USER="abdo"
-DB_PASSWORD="1337"
-DB_NAME="wokokoko"
-DB_ROOTPASSWORD="1337"
-
 sed -i 's/^bind-address/#bind-address/' /etc/mysql/mariadb.conf.d/50-server.cnf
+
 service mysql start
 # Modify the bind address
 # printf "bind-address = 0.0.0.0\n" | tee /tmp/my.cnf.tmp
 # sed -i '/^bind-address/c\bind-address = 0.0.0.0' /etc/mysql/my.cnf
 # Create the database if it doesn't exist
-mysql -e "CREATE DATABASE IF NOT EXISTS ${DB_HOST};"
+mysql -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME};"
 # Create the user if it doesn't exist
 mysql -e "CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';"
 # Grant all privileges on the database to the user
-mysql -e "GRANT ALL PRIVILEGES ON \`${DB_HOST}\`.* TO '${DB_USER}'@'%';"
+mysql -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'%';"
 # Flush privileges
 mysql -e "FLUSH PRIVILEGES;"
 # Set the root password
@@ -41,11 +23,4 @@ mysql -u root -p${DB_ROOTPASSWORD} -e "FLUSH PRIVILEGES;"
 # Stop the MariaDB service
 mysqladmin --user=root --password="${DB_ROOTPASSWORD}" shutdown
 
-# Wait for the MariaDB service to stop
-# while mysqladmin --user=root --password="${MYSQL_ROOTPASSWORD}" ping --silent; do
-#     sleep 1
-# done
- mysqld
-
-
-# exec "$@"
+mysqld_safe
