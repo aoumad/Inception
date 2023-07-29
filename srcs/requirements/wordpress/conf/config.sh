@@ -1,11 +1,15 @@
 #!/bin/bash
+
+    sleep 5
+
 	mkdir -p /run/php/;
 	touch /run/php/php7.3-fpm.pid; #Store PID files for PHP processes managed by the PHP-FPM
 	sed -i "s/listen = \/run\/php\/php7.3-fpm.sock/listen = 9000/" "/etc/php/7.3/fpm/pool.d/www.conf"
 
-mkdir -p /var/www/html
-WP_PATH="/var/www/html"
-WP_CLI="/usr/local/bin/wp"
+    mkdir -p /var/www/html
+    WP_PATH="/var/www/html"
+    WP_CLI="/usr/local/bin/wp"
+
 if [ ! -f "$WP_PATH/.installed" ]; then
     # Download WP-CLI if not already installed
     if ! command -v $WP_CLI &> /dev/null; then
