@@ -3,7 +3,9 @@
 sed -i 's/^bind-address/#bind-address/' /etc/mysql/mariadb.conf.d/50-server.cnf
 
 service mysql start
-
+# Modify the bind address
+# printf "bind-address = 0.0.0.0\n" | tee /tmp/my.cnf.tmp
+# sed -i '/^bind-address/c\bind-address = 0.0.0.0' /etc/mysql/my.cnf
 # Create the database if it doesn't exist
 mysql -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME};"
 # Create the user if it doesn't exist

@@ -14,6 +14,7 @@ RUN chmod +x /script.sh
 EXPOSE 3306
 
 # Run the destination script
+# ENTRYPOINT ["./script.sh"]
 CMD ["./script.sh"]
 
 
