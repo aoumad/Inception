@@ -1,103 +1,3 @@
-# version: "3"
-
-# services:
-#   mariadb:
-#       container_name: mariadb
-#       env_file:
-#         - .env
-#       ports:
-#         - 3306:3306
-#       build:
-#         context: requirements/mariadb
-#         dockerfile: Dockerfile
-#       image: mariadb:inception
-#       restart: always
-#       # volumes:
-#       #   - db_volume:/var/lib/mysql
-#       volumes:
-#         - type: bind
-#           source: /Users/aoumad/Documents/GitHub/Inception/mariadb
-#           target: /var/lib/mysql
-#       healthcheck:
-#         test: ["CMD-SHELL", "ss -tul | grep mysql"]
-#         interval: 5s
-#         timeout: 2s
-#         retries: 5
-#         start_period: 5s
-#       networks:
-#         - inception
-#       stdin_open: true
-#       tty: true
-
-#   wordpress:
-#       container_name: wordpress
-#       env_file:
-#         - .env
-#       ports:
-#         - 9000:9000
-#       build:
-#         context: requirements/wordpress
-#         dockerfile: Dockerfile
-#       image: wordpress:inception
-#       restart: always
-#       # depends_on:
-#       #   - mariadb
-#       depends_on:
-#         mariadb:
-#           condition: service_healthy
-#       # volumes:
-#       #   - wp_volume:/var/www/html
-#       volumes:
-#         - type: bind
-#           source: /Users/aoumad/Documents/GitHub/Inception/wordpress
-#           target: /var/www/html
-#       networks:
-#         - inception
-#       stdin_open: true
-#       tty: true
-
-#   nginx:
-#       container_name: nginx
-#       env_file:
-#         - .env
-#       ports:
-#         - 443:443
-#       build:
-#         context: requirements/nginx
-#         dockerfile: Dockerfile
-#       image: nginx:inception
-#       restart: always
-#       depends_on:
-#         - wordpress
-#       # volumes:
-#       #   - wp_volume:/var/www/html
-#       volumes:
-#         - type: bind
-#           source: /Users/aoumad/Documents/GitHub/Inception/wordpress
-#           target: /var/www/html
-#       networks:
-#         - inception
-#       stdin_open: true
-#       tty: true
-
-# networks:
-#   inception:
-#     driver: bridge
-
-# volumes:
-#   db_volume:
-#     driver: local
-#     driver_opts:
-#       type: none
-#       o: bind
-#       device: /Users/aoumad/Documents/GitHub/Inception/mariadb
-#   wp_volume:
-#     driver: local
-#     driver_opts:
-#       type: none
-#       o: bind
-#       device: /Users/aoumad/Documents/GitHub/Inception/wordpress
-
 version: "3"
 
 services:
@@ -105,8 +5,6 @@ services:
       container_name: mariadb
       env_file:
         - .env
-      ports:
-        - 3360:3360
       build: ./requirements/mariadb
       image: mariadb:inception
       restart: always
@@ -114,13 +12,12 @@ services:
         - db_volume:/var/lib/mysql
       networks:
         - inception
+      stdin_open: true
 
   wordpress:
       container_name: wordpress
       env_file:
         - .env
-      ports:
-        - 9000:9000
       build: ./requirements/wordpress
       image: wordpress:inception
       restart: always
@@ -155,12 +52,12 @@ volumes:
   db_volume:
     driver: local
     driver_opts:
-      type: none
+      type: bind
       o: bind
       device: /Users/aoumad/Documents/GitHub/Inception/mariadb
   wp_volume:
     driver: local
     driver_opts:
-      type: none
+      type: bind
       o: bind
       device: /Users/aoumad/Documents/GitHub/Inception/wordpress

@@ -17,3 +17,6 @@ down_all:
 dvolume:
 	rm -r mariadb
 	rm -r wordpress
+	docker volume rm -f srcs_wp_volume srcs_db_volume
+
+clear: down_all dcache dvolume
