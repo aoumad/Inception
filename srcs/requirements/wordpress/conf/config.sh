@@ -3,9 +3,10 @@
     sleep 5
 
 	mkdir -p /run/php/;
-    touch -p /usr/local/bin/wp;
-	touch /run/php/php7.3-fpm.pid; #Store PID files for PHP processes managed by the PHP-FPM
-	sed -i "s/listen = \/run\/php\/php7.3-fpm.sock/listen = 9000/" "/etc/php/7.3/fpm/pool.d/www.conf"
+    # touch -p /usr/local/bin/wp;
+    touch /usr/local/bin/wp;
+	touch /run/php/php7.4-fpm.pid; #Store PID files for PHP processes managed by the PHP-FPM
+	sed -i "s/listen = \/run\/php\/php7.4-fpm.sock/listen = 9000/" "/etc/php/7.4/fpm/pool.d/www.conf"
 
     # mkdir -p /var/www/html
     WP_PATH="/var/www/html"
@@ -19,10 +20,12 @@ if [ ! -f "$WP_PATH/.installed" ]; then
         mv wp-cli.phar $WP_CLI
     fi
 
-    cd $WP_PATH
-    $WP_CLI core download --allow-root
+ # set up wordpress using wp-cli
 
-    cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
+    cd $WP_PATH
+    $WP_CLI core download --allow-root # Download the WordPress core files
+
+    cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php # Create a wp-config.php file
     sed -i "s/database_name_here/${DB_NAME}/g" "/var/www/html/wp-config.php"
     sed -i "s/username_here/${DB_USER}/g" "/var/www/html/wp-config.php"
     sed -i "s/password_here/${DB_ROOTPASSWORD}/g" "/var/www/html/wp-config.php"
@@ -37,5 +40,5 @@ if [ ! -f "$WP_PATH/.installed" ]; then
 
     touch $WP_PATH/.installed
 fi
-/usr/sbin/php-fpm7.3 --nodaemonize
+/usr/sbin/php-fpm7.4 --nodaemonize
 # exec "$@"

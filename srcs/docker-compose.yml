@@ -33,7 +33,10 @@ services:
       env_file:
         - .env
       ports:
-        - 443:443
+        - 443:443  # Maps port 443 on the host to port 443 on the container
+        # The purpose of mapping port 443 on the host to port 443 on the Nginx container is to allow 
+        # incoming HTTPS traffic to reach the Nginx container, which then forwards 
+        # the requests to Wordpress
       build: ./requirements/nginx
       image: nginx:inception
       restart: always
@@ -53,11 +56,11 @@ volumes:
     driver: local
     driver_opts:
       type: bind
-      o: bind
-      device: /Users/aoumad/Documents/GitHub/Inception/mariadb
+      o: none
+      device: /Users/aoumad/Desktop/inception/mariadb
   wp_volume:
     driver: local
     driver_opts:
       type: bind
-      o: bind
-      device: /Users/aoumad/Documents/GitHub/Inception/wordpress
+      o: none
+      device: /Users/aoumad/Desktop/inception/wordpress

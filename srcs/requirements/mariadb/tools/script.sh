@@ -1,8 +1,10 @@
 #!/bin/bash
+# interpreter that should be used to execute the script
 
 sed -i 's/^bind-address/#bind-address/' /etc/mysql/mariadb.conf.d/50-server.cnf
+# making it listen on all available interfaces
 
-service mysql start
+service mariadb start
 
 
 mysql -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME};"
